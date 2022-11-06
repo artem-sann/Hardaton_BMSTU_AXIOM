@@ -8,12 +8,18 @@ constexpr uint8_t PIN_DB5 = 6;
 constexpr uint8_t PIN_DB6 = 7;
 constexpr uint8_t PIN_DB7 = 8;
 
+#define RED A3
+#define GREEN A2
+#define BLUE A1
+#define Light_LED A6
+
 // Массив корторый приходит от мастера
-volatile uint8_t master_arr [7]; // ex: "0001000" - тип топлива и количество
+volatile uint8_t master_arr [7]; // ex: "95[0] 45[1]" - тип топлива и количество
 // Массив который отдаем от мастеру
 volatile uint8_t slave_arr  [7];
 // счетчик входящих байт
 volatile int16_t countSPIb = -1;
+
 
 bool start_fuel = false;
 
@@ -42,6 +48,12 @@ void setup() {
   slave_arr [1] = 200;
   slave_arr [2] = 250;
   //----------------------------------------------------------------------------------------->
+  //---------------------------------LED setup----------------------------------------------->
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+  pinMode(Light_LED, OUTPUT);
+  //----------------------------------------------------------------------------------------->
 }
 
 
@@ -64,13 +76,85 @@ ISR (SPI_STC_vect)                       // Прерывание SPI - приш�
 }                                        // Конец SPI - пришел байт
 
 
+
 void loop() {
+  digitalWrite(Light_LED, HIGH);
   if (start_fuel) {
-    lcd.setCursor(0, 1);
+    digitalWrite(Light_LED, LOW);
+    if (master_arr[0]==92){
+        digitalWrite(BLUE, HIGH);
+    }
+    else if(master_arr[0]==95) {
+        digitalWrite(RED, HIGH);
+    }
+    else if(master_arr[0]==80) {
+        digitalWrite(GREEN, HIGH);
+    }
+    else if(master_arr[0]==98) {
+        digitalWrite(GREEN, HIGH);
+        digitalWrite(RED, HIGH);
+        digitalWrite(BLUE, HIGH);  
+    }
+
     lcd.clear();
-    lcd.print("Начинаем запр.");
+    char mess_1[16] = "Typ AI00 Cst00p";
+    char mess_2[16] = "00/00..........";
+
+    mess_2[3] = (master_arr[1]/10)+48;
+    mess_2[4] = (master_arr[1]%10)+48;
+    mess_1[6] = (master_arr[0]/10)+48;
+    mess_1[7] = (master_arr[0]%10)+48;
+    int cost = master_arr[0]/2;
+    mess_1[12] = (cost/10)+48;
+    mess_1[13] = (cost%10)+48;
+
+    Serial.println(mess_1);
+    Serial.println(mess_2);
+    lcd.setCursor(0, 0);
+    lcd.print(mess_1);
+    lcd.setCursor(0, 1);
+    lcd.print(mess_2);
+
+    delay(100);
+    for (int i = 0; i < 10; i++){
+      mess_2[5+i] = '#';
+      float to_load = master_arr[1]/10 + master_arr[1]/10*i;
+      int to_indicate = to_load;
+
+      mess_2[0] = (to_indicate/10)+48;
+      mess_2[1] = (to_indicate%10)+48;
+
+      Serial.println(mess_2);
+      lcd.setCursor(0, 1);
+      lcd.print(mess_2);
+
+      delay(400);
+    }
+    mess_2[0] = (master_arr[1]/10)+48;
+    mess_2[1] = (master_arr[1]%10)+48;
+
+    Serial.println(mess_2);
+    lcd.setCursor(0, 1);
+    lcd.print(mess_2);
+
     Serial.println("done");
     delay(100);
   }
-  
+  start_fuel = false;
+  digitalWrite(GREEN, LOW);
+  digitalWrite(RED, LOW);
+  digitalWrite(BLUE, LOW);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Заправлено");
+  lcd.setCursor(0, 1);
+  lcd.print("Доброго пути");
+
+  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Отскан. QR код");
+  lcd.setCursor(0, 1);
+  lcd.print("Поиск бензобака");
 }

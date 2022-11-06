@@ -17,8 +17,8 @@ void setup (void)
   // отладка
   Serial.begin (115200);
   Serial.println ();
-  master_arr [0] = 0;
-  master_arr [1] = 0;
+  master_arr [0] = 92;
+  master_arr [1] = 87;
   master_arr [2] = 0;
   master_arr [3] = 1;
   master_arr [4] = 0;
@@ -52,7 +52,7 @@ void refreshSPI ()                        // Процедура обмена м�
 
 void loop (void)
 {
-  delay (1000);
+  delay (5000);
   refreshSPI ();
   // цикл по slave_arr[]
   for (int i = 0; i < sizeof(slave_arr); i++) {
