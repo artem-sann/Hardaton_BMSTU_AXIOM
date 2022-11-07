@@ -1,0 +1,11 @@
+.exe
+
+.bin
+
+*.db
+
+.env
+
+.vscode
+
+*.txt

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/order_stylesheet.css">
+    <title>Умная заправка</title>
+</head>
+<body>
+    <div class="main_wrapper">
+        <form class="registr" action="o" method="post">
+
+            <div class="name_surname_div">
+                <p>Укажите информацию о себе</p>
+                <input type="text" name="name" placeholder="Введите Ваше имя" size="18" />
+                <input type="text" name="surname" placeholder="Введите Вашу фамилию" size="18" />
+            </div>
+
+            <div class="fuel_type_div">
+                <select name="fuel_type">
+                    <option value="95">95</option>
+                    <option value="92">92</option>
+                    <option value="100">100</option>
+                    <option value="98">98</option>
+                    <option value="80">80</option>
+                </select>
+            </div>
+
+            <div class="volume_div">
+                <input type="number" name="volume" placeholder="Введите желаемый объем" size="18" />
+            </div>
+
+            <div class="pay_div">
+                <input name="checkbox" type="checkbox">
+            </div>
+
+            <button class="button" type="submit"> Оплатить</button>
+
+            <iframe 
+                width="300" height="300" src="https://widget.qiwi.com/widgets/middle-widget-300x300?publicKey=48e7qUxn9T7RyYE1MVZswX1FRSbE6iyCj2gCRwwF3Dnh5XrasNTx3BGPiMsyXQFNKQhvukniQG8RTVhYm3iPri1hpi3qPm67jCnJPQHJLFnY5KFV8QWqY97JHuHCNaBhpn8FWF2SdrPckjJxwNgb8RMrdowYkeo6U9CwZ5GY3BjUnA5HcDCqFGwSSEXip" 
+                allowtransparency="true" scrolling="no" frameborder="0">
+            </iframe>
+        </form>
+
+    </div>
+</body>
+</html>
+
